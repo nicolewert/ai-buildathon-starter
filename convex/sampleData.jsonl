@@ -1,0 +1,5 @@
+{"text": "Build an amazing hackathon project", "isCompleted": false, "createdAt": 1642636800000}
+{"text": "Set up Convex database", "isCompleted": true, "createdAt": 1642636900000}
+{"text": "Create awesome UI with shadcn/ui", "isCompleted": false, "createdAt": 1642637000000}
+{"name": "Alice Johnson", "email": "alice@example.com", "avatarUrl": "https://github.com/shadcn.png", "createdAt": 1642636800000}
+{"name": "Bob Smith", "email": "bob@example.com", "createdAt": 1642636900000}

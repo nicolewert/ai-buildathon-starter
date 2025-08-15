@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file_path=$(echo '$TOOL_INPUT' | jq -r '.file_path'); if [[ \"$file_path\" == *.ts ]] || [[ \"$file_path\" == *.tsx ]] || [[ \"$file_path\" == *.js ]] || [[ \"$file_path\" == *.jsx ]]; then echo \"🔧 Running formatter, linter, and type checker on $file_path...\"; npx prettier --write \"$file_path\" && pnpm lint:fix && (pnpm type-check || echo \"⚠️ Type check completed with issues\") && echo \"✅ Code quality checks complete\"; fi"
+          }
+        ]
+      }
+    ],
+     "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' 'Awaiting your input'"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "vercel": {
+      "transport": {
+        "type": "http",
+        "url": "https://mcp.vercel.com"
+      }
+    }
+  }
+}

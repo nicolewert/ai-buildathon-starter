@@ -1,0 +1,18 @@
+{
+  "name": "convex-mcp-server",
+  "version": "1.0.0",
+  "description": "Convex MCP server for hackathon starter",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "convex": "^1.25.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}
