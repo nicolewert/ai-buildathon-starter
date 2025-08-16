@@ -1,6 +1,6 @@
 # Triple MCP Server Setup Guide
 
-This guide walks you through setting up your hackathon starter with Convex database and triple MCP server integration (Convex + Vercel + Puppeteer).
+This guide walks you through setting up your hackathon starter with Convex database and triple global MCP server integration (Convex + Vercel + Playwright).
 
 ## Quick Setup (Recommended)
 
@@ -17,15 +17,9 @@ pnpm install
 # 3. Set up Convex project
 pnpm setup-convex
 
-# 4. Connect all MCP servers to Claude Code
-pnpm mcp-connect-all
-
-# 5. Set up Vercel MCP integration (optional but recommended)
-pnpm setup-vercel-mcp
-
-# 6. Start development (with or without Puppeteer)
+# 4. Start development (MCP servers auto-configured in .mcp.json)
 pnpm dev-full                    # Convex + Next.js
-pnpm dev-full-with-puppeteer    # All servers + browser automation
+pnpm dev-full-with-playwright   # All services with global Playwright MCP
 ```
 
 **You're ready to hack!** 🚀
@@ -39,29 +33,19 @@ pnpm dev-full-with-puppeteer    # All servers + browser automation
 - Automatically adds the Convex URL to `.env.local`
 - Sets up the database with your schema
 
-### `pnpm mcp-connect-all`
-- Updates `.claude/settings.json` with all MCP server configurations
-- Connects Convex database and Puppeteer browser automation to Claude Code
-- Enables local database tools, browser automation, and resources in Claude
-
-### Individual MCP Connection Commands
-- `pnpm mcp-connect` - Connect only Convex MCP server
-- `pnpm mcp-connect-puppeteer` - Connect only Puppeteer MCP server
-
-### `pnpm setup-vercel-mcp`
-- Provides instructions for connecting Vercel MCP to Claude Code
-- Enables deployment management, documentation search, and project operations
-- Requires manual authentication with your Vercel account in Claude Code
+### MCP Server Auto-Configuration
+- All MCP servers are configured globally in `.mcp.json`
+- Convex and Playwright MCP servers are automatically available in Claude Code
+- Vercel MCP requires manual connection: `/connect mcp --url https://mcp.vercel.com` in Claude Code
 
 ### `pnpm dev-full`
 - Starts Next.js development server (port 3000)
 - Starts Convex sync in watch mode
-- Starts local Convex MCP server for Claude Code integration
-- Note: Vercel MCP runs hosted, no local setup needed
+- Note: All MCP servers (Convex, Playwright, Vercel) run globally/hosted, no local setup needed
 
-### `pnpm dev-full-with-puppeteer`
-- All features from `dev-full`
-- Additionally starts Puppeteer MCP server for browser automation
+### `pnpm dev-full-with-playwright`
+- Same as `dev-full` - all MCP servers are global now
+- Global Playwright MCP server available for browser automation
 - Enables web scraping, screenshots, and form automation through Claude
 
 ## Manual Setup (If Needed)
@@ -98,45 +82,30 @@ CONVEX_URL=https://your-deployment-url.convex.cloud
 ### 3. Build and Start MCP Servers
 
 ```bash
-# Build all MCP servers
-pnpm mcp:build
-
-# Build individual servers
-pnpm mcp:build:convex
-pnpm mcp:build:puppeteer
-
-# Test individual MCP servers
-pnpm mcp:dev:convex
-pnpm mcp:dev:puppeteer
+# All MCP servers are now global, no build steps needed!
+# MCP servers are available via .mcp.json configuration
 ```
 
 ### 4. Configure Claude Code MCP Integration
 
-Add to `.claude/settings.json`:
+MCP servers are automatically configured in `.mcp.json`:
 
 ```json
 {
   "mcpServers": {
-    "convex-hackathon": {
-      "command": "node",
-      "args": ["mcp-servers/convex/dist/index.js"],
-      "env": {
-        "CONVEX_URL": "https://your-deployment-url.convex.cloud"
-      }
+    "convex": {
+      "command": "npx",
+      "args": ["-y", "convex@latest", "mcp", "start"]
     },
-    "puppeteer-hackathon": {
-      "command": "node",
-      "args": ["mcp-servers/puppeteer/dist/index.js"]
-    },
-    "vercel": {
-      "transport": {
-        "type": "http",
-        "url": "https://mcp.vercel.com"
-      }
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
     }
   }
 }
 ```
+
+Vercel MCP is connected separately via: `/connect mcp --url https://mcp.vercel.com`
 
 ## Testing Your Setup
 
@@ -157,14 +126,14 @@ export default function Home() {
 }
 ```
 
-### 2. Test Convex MCP Server with Claude Code
+### 2. Test Global Convex MCP Server with Claude Code
 
 In Claude Code, try these commands:
 - "Show me all tasks from the database"
 - "Create a new task called 'Test MCP integration'"
 - "List all users"
 
-### 3. Test Puppeteer MCP Server with Claude Code
+### 3. Test Playwright MCP Server with Claude Code
 
 In Claude Code, try these commands:
 - "Navigate to https://example.com and take a screenshot"
@@ -196,18 +165,18 @@ After setting up Vercel MCP, try these commands:
 ### MCP Server Issues
 
 **Error: "Cannot find module"**
-- Run `pnpm mcp:build` to compile all TypeScript servers
-- Check that `mcp-servers/*/dist/index.js` files exist
-- Try building individual servers: `pnpm mcp:build:convex` or `pnpm mcp:build:puppeteer`
+- All MCP servers are now global, no local build needed
+- Verify `.mcp.json` configuration is correct
+- Try running `npx convex@latest mcp start` manually to test
 
 **Claude Code can't find MCP servers**
-- Verify `.claude/settings.json` has correct configurations for all servers
-- Check that `CONVEX_URL` environment variable is set in Convex MCP config
+- Verify `.mcp.json` has correct configurations for all servers
+- Ensure you have internet access for global MCP servers
 - Restart Claude Code after configuration changes
 
-**Puppeteer browser not launching**
-- Install Chrome/Chromium if not available
-- On Linux, you may need: `sudo apt-get install -y libgbm-dev`
+**Playwright browser not launching**
+- Run `npx playwright install` to install browsers
+- On Linux, you may need: `npx playwright install-deps`
 - Check console output for specific browser launch errors
 
 ### Vercel MCP Issues
@@ -254,17 +223,17 @@ Or create data programmatically in Claude Code:
 
 ## MCP Server Capabilities Overview
 
-### Convex MCP Server (Local)
+### Convex MCP Server (Global)
 **Purpose**: Real-time database operations
 **Tools**: create-task, toggle-task, create-user, create-note, list-user-notes
 **Resources**: Tasks, Users, Notes from database
 **Use cases**: Data management, CRUD operations, real-time updates
 
-### Puppeteer MCP Server (Local)  
+### Playwright MCP Server (Global)
 **Purpose**: Browser automation and web scraping
 **Tools**: navigate, screenshot, click, type, wait-for-element, evaluate-js, get-text, close-browser
-**Resources**: Console logs, current page info
-**Use cases**: Web scraping, form automation, screenshot generation, testing
+**Resources**: Console logs, current page info, accessibility tree
+**Use cases**: Web scraping, form automation, screenshot generation, testing, accessibility validation
 
 ### Vercel MCP Server (Hosted)
 **Purpose**: Deployment management and documentation
@@ -301,9 +270,9 @@ Your Convex database includes these tables:
 3. **Build your UI** - Use the pre-installed shadcn/ui components
 4. **Leverage all MCP servers**:
    - Use Claude Code to manage your database (Convex)
-   - Automate web interactions and scraping (Puppeteer) 
+   - Automate web interactions and scraping (Playwright) 
    - Deploy and manage your project (Vercel)
-5. **Extend MCP servers** - Add more servers in `mcp-servers/` directory
+5. **Extend MCP servers** - Add more global servers in `.mcp.json` configuration
 
 ## Support
 

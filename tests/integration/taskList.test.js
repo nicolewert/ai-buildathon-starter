@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
@@ -22,17 +22,12 @@ class TaskListIntegrationTest {
   async setup() {
     console.log('🚀 Starting TaskList Integration Tests...');
     
-    this.browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage'
-      ]
+    this.browser = await chromium.launch({
+      headless: true
     });
     
     this.page = await this.browser.newPage();
-    await this.page.setViewport({ width: 1280, height: 720 });
+    await this.page.setViewportSize({ width: 1280, height: 720 });
   }
 
   async teardown() {
@@ -61,7 +56,7 @@ class TaskListIntegrationTest {
     for (let i = 0; i < 30; i++) {
       try {
         const response = await this.page.goto(BASE_URL, { 
-          waitUntil: 'networkidle0',
+          waitUntil: 'networkidle',
           timeout: 5000 
         });
         
@@ -101,7 +96,7 @@ class TaskListIntegrationTest {
   }
 
   async testHomepageLoads() {
-    await this.page.goto(BASE_URL, { waitUntil: 'networkidle0' });
+    await this.page.goto(BASE_URL, { waitUntil: 'networkidle' });
     
     // Check if homepage title is present
     const titleElement = await this.page.waitForSelector('h1', { timeout: TIMEOUT });
@@ -119,7 +114,7 @@ class TaskListIntegrationTest {
   }
 
   async testTaskCreation() {
-    await this.page.goto(BASE_URL, { waitUntil: 'networkidle0' });
+    await this.page.goto(BASE_URL, { waitUntil: 'networkidle' });
     
     // Wait for task input to be present
     const taskInput = await this.page.waitForSelector('input[placeholder*="Add a new task"]', { timeout: TIMEOUT });
@@ -127,7 +122,7 @@ class TaskListIntegrationTest {
     
     // Add a new task
     const testTaskText = `Test Task ${Date.now()}`;
-    await taskInput.type(testTaskText);
+    await taskInput.fill(testTaskText);
     await submitButton.click();
     
     // Wait for the task to appear in the list
@@ -136,26 +131,26 @@ class TaskListIntegrationTest {
         const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
         return Array.from(taskElements).some(el => el.textContent.includes(taskText));
       },
-      { timeout: TIMEOUT },
-      testTaskText
+      testTaskText,
+      { timeout: TIMEOUT }
     );
     
     // Verify the input field was cleared
-    const inputValue = await taskInput.evaluate(input => input.value);
+    const inputValue = await taskInput.inputValue();
     if (inputValue !== '') {
       throw new Error('Task input should be cleared after submission');
     }
   }
 
   async testTaskToggle() {
-    await this.page.goto(BASE_URL, { waitUntil: 'networkidle0' });
+    await this.page.goto(BASE_URL, { waitUntil: 'networkidle' });
     
     // Create a task first
     const taskInput = await this.page.waitForSelector('input[placeholder*="Add a new task"]', { timeout: TIMEOUT });
     const submitButton = await this.page.waitForSelector('button[type="submit"]', { timeout: TIMEOUT });
     
     const testTaskText = `Toggle Test ${Date.now()}`;
-    await taskInput.type(testTaskText);
+    await taskInput.fill(testTaskText);
     await submitButton.click();
     
     // Wait for task to appear and find its toggle button
@@ -164,20 +159,13 @@ class TaskListIntegrationTest {
         const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
         return Array.from(taskElements).some(el => el.textContent.includes(taskText));
       },
-      { timeout: TIMEOUT },
-      testTaskText
+      testTaskText,
+      { timeout: TIMEOUT }
     );
     
     // Find and click the check button for our task
-    const checkButton = await this.page.evaluateHandle((taskText) => {
-      const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
-      const taskElement = Array.from(taskElements).find(el => el.textContent.includes(taskText));
-      return taskElement ? taskElement.querySelector('button') : null;
-    }, testTaskText);
-    
-    if (!checkButton) {
-      throw new Error('Could not find check button for the test task');
-    }
+    const taskElementLocator = this.page.locator('.flex.items-center.gap-2.p-3').filter({ hasText: testTaskText });
+    const checkButton = taskElementLocator.locator('button').first();
     
     await checkButton.click();
     
@@ -191,20 +179,20 @@ class TaskListIntegrationTest {
         const taskSpan = taskElement.querySelector('span.flex-1');
         return taskSpan && taskSpan.classList.contains('line-through');
       },
-      { timeout: TIMEOUT },
-      testTaskText
+      testTaskText,
+      { timeout: TIMEOUT }
     );
   }
 
   async testTaskDeletion() {
-    await this.page.goto(BASE_URL, { waitUntil: 'networkidle0' });
+    await this.page.goto(BASE_URL, { waitUntil: 'networkidle' });
     
     // Create a task first
     const taskInput = await this.page.waitForSelector('input[placeholder*="Add a new task"]', { timeout: TIMEOUT });
     const submitButton = await this.page.waitForSelector('button[type="submit"]', { timeout: TIMEOUT });
     
     const testTaskText = `Delete Test ${Date.now()}`;
-    await taskInput.type(testTaskText);
+    await taskInput.fill(testTaskText);
     await submitButton.click();
     
     // Wait for task to appear
@@ -213,21 +201,13 @@ class TaskListIntegrationTest {
         const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
         return Array.from(taskElements).some(el => el.textContent.includes(taskText));
       },
-      { timeout: TIMEOUT },
-      testTaskText
+      testTaskText,
+      { timeout: TIMEOUT }
     );
     
     // Find and click the delete button for our task
-    const deleteButton = await this.page.evaluateHandle((taskText) => {
-      const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
-      const taskElement = Array.from(taskElements).find(el => el.textContent.includes(taskText));
-      const buttons = taskElement ? taskElement.querySelectorAll('button') : [];
-      return buttons.length > 1 ? buttons[1] : null; // Second button should be delete
-    }, testTaskText);
-    
-    if (!deleteButton) {
-      throw new Error('Could not find delete button for the test task');
-    }
+    const taskElementLocator = this.page.locator('.flex.items-center.gap-2.p-3').filter({ hasText: testTaskText });
+    const deleteButton = taskElementLocator.locator('button').nth(1); // Second button should be delete
     
     await deleteButton.click();
     
@@ -237,8 +217,8 @@ class TaskListIntegrationTest {
         const taskElements = document.querySelectorAll('.flex.items-center.gap-2.p-3');
         return !Array.from(taskElements).some(el => el.textContent.includes(taskText));
       },
-      { timeout: TIMEOUT },
-      testTaskText
+      testTaskText,
+      { timeout: TIMEOUT }
     );
   }
 

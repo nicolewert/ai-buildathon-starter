@@ -76,7 +76,7 @@ tests/
 ├── claude-integration.js        # Claude Code automation script
 ├── runner.js                   # Test runner with retries
 ├── integration/
-│   └── taskList.test.js        # Puppeteer integration tests
+│   └── taskList.test.js        # Playwright integration tests
 └── screenshots/                # Failure screenshots
 ```
 
@@ -84,7 +84,7 @@ tests/
 
 1. **Server Startup**: Starts Next.js + Convex + MCP servers in background
 2. **Health Check**: Waits for localhost:3000 to be ready
-3. **Test Execution**: Runs Puppeteer tests against live application
+3. **Test Execution**: Runs Playwright tests against live application
 4. **Retry Logic**: Automatically retries failed tests up to 3 times
 5. **Cleanup**: Properly terminates all background processes
 6. **Reporting**: Provides clear pass/fail status with screenshots
@@ -124,7 +124,7 @@ Check `tests/screenshots/` for failure screenshots showing the exact UI state.
 Ensure you've run `pnpm setup-convex` to initialize your Convex project.
 
 ### MCP Server Issues
-Verify MCP servers are connected with `pnpm mcp-connect-all`.
+Verify MCP servers are configured in `.mcp.json` and available in Claude Code.
 
 ## Benefits for Hackathon Development
 

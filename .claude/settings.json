@@ -11,7 +11,7 @@
         ]
       }
     ],
-     "Notification": [
+    "Notification": [
       {
         "matcher": "",
         "hooks": [
@@ -22,13 +22,5 @@
         ]
       }
     ]
-  },
-  "mcpServers": {
-    "vercel": {
-      "transport": {
-        "type": "http",
-        "url": "https://mcp.vercel.com"
-      }
-    }
   }
 }

@@ -11,7 +11,7 @@ A minimal Next.js starter template optimized for rapid hackathon development.
 - **Package Manager**: pnpm
 - **Build Tool**: Turbopack for fast development
 - **Language**: TypeScript
-- **MCP Servers**: Convex (local) + Puppeteer (local) + Vercel (hosted) for Claude Code
+- **MCP Servers**: Convex (global) + Playwright (global) + Vercel (hosted) for Claude Code
 
 ## Quick Setup for Triple MCP Integration
 
@@ -23,25 +23,19 @@ pnpm install
 # 2. Set up Convex project (creates your database)
 pnpm setup-convex
 
-# 3. Connect all MCP servers to Claude Code
-pnpm mcp-connect-all
-
-# 4. Set up Vercel MCP integration (optional but recommended)
-pnpm setup-vercel-mcp
+# 3. MCP servers are automatically configured in .mcp.json
+# No additional setup needed!
 ```
 
 **Daily development:**
 ```bash
-# Standard development (Next.js + Convex + Convex MCP)
+# Standard development (Next.js + Convex)
 pnpm dev-full
-
-# Full development with browser automation
-pnpm dev-full-with-puppeteer
 
 # Background development (for Claude Code integration testing)
 pnpm dev-bg
 
-# Note: Vercel MCP runs hosted, so no local setup needed
+# Note: All MCP servers (Convex, Playwright, Vercel) run globally/hosted, so no local setup needed
 ```
 
 ## Standard Next.js Commands
@@ -80,17 +74,6 @@ convex/
 ├── notes.ts             # Notes queries and mutations
 └── sampleData.jsonl     # Sample data for testing
 
-mcp-servers/             # Organized MCP server architecture
-├── convex/              # Database operations
-│   ├── index.ts         # Convex MCP server
-│   ├── tsconfig.json    # TypeScript config
-│   └── package.json     # Dependencies
-├── puppeteer/           # Browser automation
-│   ├── index.ts         # Puppeteer MCP server  
-│   ├── tsconfig.json    # TypeScript config
-│   └── package.json     # Dependencies
-└── shared/              # Common utilities
-    └── types.ts         # Shared MCP types
 
 .claude/
 ├── settings.json        # Claude Code + Triple MCP configuration
@@ -101,7 +84,7 @@ tests/                   # Integration testing with Claude Code
 ├── README.md            # Testing documentation
 ├── claude-integration.js # Claude Code automation script
 ├── runner.js            # Test runner with retries
-├── integration/         # Puppeteer integration tests
+├── integration/         # Playwright integration tests
 │   └── taskList.test.js # TaskList component tests
 └── screenshots/         # Failure screenshots
 ```
@@ -122,19 +105,13 @@ pnpm dlx shadcn@latest add [component-name]
 
 ### MCP Server Commands
 - `pnpm setup-convex` - One-time Convex project setup
-- `pnpm dev-full` - Start Next.js + Convex + Convex MCP
-- `pnpm dev-full-with-puppeteer` - Start all services + browser automation
+- `pnpm dev-full` - Start Next.js + Convex
+- `pnpm dev-full-with-playwright` - Start Next.js + Convex (same as dev-full)
 - `pnpm dev-bg` - Background development (for Claude integration testing)
-- `pnpm mcp-connect-all` - Connect all MCP servers to Claude Code
-- `pnpm mcp:build` - Build all MCP servers
-- `pnpm mcp:build:convex` - Build Convex MCP server only
-- `pnpm mcp:build:puppeteer` - Build Puppeteer MCP server only
-- `pnpm mcp:dev:convex` - Start Convex MCP server only
-- `pnpm mcp:dev:puppeteer` - Start Puppeteer MCP server only
 
 ### Integration Testing Commands
 - `pnpm ci-check` - Full integration check (Claude Code recommended)
-- `pnpm test-integration` - Run Puppeteer integration tests only
+- `pnpm test-integration` - Run Playwright integration tests only
 
 ### Standard Commands
 - `pnpm dev` - Start development server with Turbopack
@@ -147,17 +124,18 @@ pnpm dlx shadcn@latest add [component-name]
 
 This project includes triple MCP server integration with Claude Code:
 
-### Convex MCP Server (Local)
+### Convex MCP Server (Global)
 - **Database Resources**: Read tasks, users, notes from Convex
 - **Database Tools**: Create/update tasks, users, notes via Claude
 - **Real-time Sync**: Changes reflect immediately in your app
-- **Custom Schema**: Tailored to your project's data structure
+- **Global Installation**: Uses official Convex MCP via npx
 
-### Puppeteer MCP Server (Local)
+### Playwright MCP Server (Global)
 - **Browser Automation**: Navigate websites, fill forms, take screenshots
-- **Web Scraping**: Extract data from dynamic web pages
+- **Accessibility Tree**: Works with Playwright's accessibility APIs for better element detection
+- **Multi-Browser Support**: Chrome, Firefox, and WebKit browsers
 - **Testing Support**: Automate UI testing and form interactions
-- **Security-First**: Controlled browser environment with safety measures
+- **Global Installation**: Uses Microsoft's official @playwright/mcp package
 
 ### Vercel MCP Server (Hosted)
 - **Deployment Management**: Access deployment logs and status
@@ -178,9 +156,8 @@ Environment variables are automatically configured by `pnpm setup-convex`:
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 CONVEX_URL=https://your-deployment.convex.cloud
 
-# Optional: For advanced Puppeteer configuration
-# PUPPETEER_EXECUTABLE_PATH=/path/to/chrome
-# PUPPETEER_HEADLESS=true
+# Optional: For advanced Playwright configuration
+# PLAYWRIGHT_BROWSERS_PATH=/path/to/browsers
 
 # Add additional environment variables here
 # NEXT_PUBLIC_API_URL=
@@ -201,13 +178,13 @@ npx vercel
 2. **Rapid Database Setup**: Convex handles backend instantly
 3. **Real-time Features**: Convex subscriptions for live updates
 4. **AI-Assisted Development**: Triple MCP servers for database, browser automation, and deployment
-5. **Web Automation**: Puppeteer MCP for data scraping and form automation
+5. **Web Automation**: Playwright MCP for data scraping and form automation
 6. **Rapid Styling**: Leverage Tailwind's utility classes
 7. **Type Safety**: TypeScript + Convex for end-to-end type safety
 8. **Performance**: Turbopack enables fast hot reloading
 9. **Continuous Integration**: Use `pnpm ci-check` for automatic testing with Claude Code
 10. **Complete AI Workflow**: From database to browser automation to deployment, all manageable through Claude Code
-11. **Scalable Architecture**: Organized MCP structure for easy extension
+11. **Global MCP Servers**: All MCP servers (Convex, Playwright, Vercel) run globally for zero-configuration setup
 
 ## License
 
