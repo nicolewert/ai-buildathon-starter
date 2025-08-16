@@ -6,7 +6,7 @@ export default defineSchema({
     text: v.string(),
     isCompleted: v.boolean(),
     createdAt: v.number(),
-  }).index('by_creation_time', ['createdAt']),
+  }).index('by_created_at', ['createdAt']),
 
   users: defineTable({
     name: v.string(),
@@ -22,5 +22,5 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   }).index('by_user', ['userId'])
-    .index('by_creation_time', ['createdAt']),
+    .index('by_created_at', ['createdAt']),
 })
