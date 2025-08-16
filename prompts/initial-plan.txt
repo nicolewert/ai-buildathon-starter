@@ -1,0 +1,11 @@
+I am in a hackathon where I must complete this project in 1 hour. We need expert level precision with identifying each task in the build. We need to prioritize speed and simplicity. We need a concise plan for implementing the project below with the stack listed. Do not write code or include project setup as we already have a starter template codebase that sets these up minimally.  Please define clearly the endpoints and integrations that will be present and the db schemas we will need. Think mvp we want to win this hackathon!
+## Tech Stack
+* Framework: Next.js 15 with App Router
+* Database: Convex (real-time, TypeScript-native)
+* Styling: Tailwind CSS v3
+* Components: shadcn/ui (New York style)
+* Package Manager: pnpm
+* Build Tool: Turbopack for fast development
+* Language: TypeScript
+* MCP Servers: Convex (local) + Puppeteer (local) + Vercel (hosted) for Claude Code
+##Project Description

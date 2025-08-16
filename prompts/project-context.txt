@@ -1,0 +1,23 @@
+Generate a hackathon project context document from our plan. Format as markdown for agents to reference.
+
+## Tech Stack
+* Framework: Next.js 15 with App Router
+* Database: Convex (real-time, TypeScript-native)  
+* Styling: Tailwind CSS v3
+* Components: shadcn/ui (New York style)
+* Package Manager: pnpm
+* Build Tool: Turbopack
+* Language: TypeScript
+* MCP Servers: Convex (local) + Puppeteer (local) + Vercel (hosted)
+
+Please output a structured context document with:
+
+1. **Project Overview**: 2-3 sentence summary optimized for AI agents
+2. **Tech Stack**: Complete list as provided
+3. **Database Schema**: All tables with field definitions and relationships
+4. **API Contract**: All Convex queries, mutations, and actions needed
+5. **Component Architecture**: Key shared components and patterns
+6. **Routing Structure**: All pages and navigation flow
+7. **Integration Points**: How features connect to each other
+
+Format for easy agent consumption. Prioritize completeness over brevity - this is the single source of truth.

@@ -1,0 +1,8 @@
+I have custom Agent Configurations for my project: hackathon-judge-optimizer, hackathon-code-reviewer, hackathon-debugger, hackathon-documenter, react-component-builder. I also have custom commands for feature-implementation and integration testing as described below.  I plan to build our plan out in serial. We need  to plan each feature and define detailed arguments for each including schema, api, component details from the plan we generated. 
+##feature-implementor.md
+ Complete feature development for: $ARGUMENTS
+@react-component-builder: Create necessary components
+@hackathon-code-reviewer: Quick review for critical issues
+@hackathon-debugger: Test integration and fix issues
+@hackathon-documenter: Add feature documentation
+Coordinate these steps for rapid feature completion.

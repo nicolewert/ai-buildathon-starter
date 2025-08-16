@@ -20,6 +20,8 @@ pnpm setup-convex
 # 4. Start development (MCP servers auto-configured in .mcp.json)
 pnpm dev-full                    # Convex + Next.js
 pnpm dev-full-with-playwright   # All services with global Playwright MCP
+
+# 5. Update project context & run theme command
 ```
 
 **You're ready to hack!** 🚀
